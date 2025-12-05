@@ -12,14 +12,14 @@ Windows 10, 11 Number widget<br><br>
 <hr>
 <div align="center">
 <a href="https://github.com/markovuser/Number-Widget/releases/latest"><img src="https://img.shields.io/github/v/release/markovuser/Number-Widget?style=for-the-badge&labelColor=3d3d3d&color=179962" alt="Version"></a>
-<a href="https://github.com/markovuser/Number-Widget/releases/latest/download/Information-Widget-setup.exe"><img src="https://img.shields.io/github/downloads/markovuser/Number-Widget/total?style=for-the-badge&logo=github&color=blue" alt="Downloads"></a>
+<a href="https://github.com/markovuser/Number-Widget/releases/latest/download/Number-Widget-setup.exe"><img src="https://img.shields.io/github/downloads/markovuser/Number-Widget/total?style=for-the-badge&logo=github&color=blue" alt="Downloads"></a>
 
 </div>
 <br><br>
 
 <div align="center">
   
-[<img src="https://raw.githubusercontent.com/markovuser/Number-Widget/main/assets/download.png" width="250" alt="Download" title="Installer">](https://github.com/markovuser/Number-Widget/releases/latest/download/Information-Widget-setup.exe)
+[<img src="https://raw.githubusercontent.com/markovuser/Number-Widget/main/assets/download.png" width="250" alt="Download" title="Installer">](https://github.com/markovuser/Number-Widget/releases/latest/download/INumber-Widget-setup.exe)
 
 </div>
 
