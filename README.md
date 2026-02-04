@@ -20,7 +20,7 @@ Windows 10, 11 Number widget<br><br>
 <div align="center">
   
 [<img src="https://raw.githubusercontent.com/markovuser/Number-Widget/main/assets/download.png" width="250" alt="Download" title="Installer">](https://github.com/markovuser/Number-Widget/releases/latest/download/Number-Widget-setup.exe)<br>
-[<img src="https://raw.githubusercontent.com/markovuser/Number-Widget/main/assets/downloadport.png" width="250" alt="Download" title="Portable">](https://github.com/markovuser/Number-Widget/releases/latest/download/Number.Widget.zip)
+[<img src="https://raw.githubusercontent.com/markovuser/Number-Widget/main/assets/Portable.png" width="250" alt="Download" title="Portable">](https://github.com/markovuser/Number-Widget/releases/latest/download/Number.Widget.zip)
 
 </div>
 
