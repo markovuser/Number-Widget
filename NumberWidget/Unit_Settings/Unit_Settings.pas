@@ -1,24 +1,24 @@
-﻿Unit Unit_Settings;
+﻿unit Unit_Settings;
 
-Interface
+interface
 
-Uses
+uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, ShellApi, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.ExtCtrls, WindowsDarkMode, IniFiles, Registry,
   Vcl.Samples.Spin, Vcl.Grids, Vcl.Buttons, Vcl.Menus, StrUtils, WinSvc,
   System.UITypes, Vcl.NumberBox, ComCtrls;
 
-Type
-  TTrackBar = Class(ComCtrls.TTrackBar)
-  Protected
-    Procedure MouseDown(Button: TMouseButton; Shift: TShiftState; x, y: Integer); Override;
-    Function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; Override;
-    Procedure CreateParams(Var Params: TCreateParams); Override;
-  End;
+type
+  TTrackBar = class(ComCtrls.TTrackBar)
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; x, y: Integer); override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
+    procedure CreateParams(var Params: TCreateParams); override;
+  end;
 
-Type
-  TForm2 = Class(TForm)
+type
+  TForm2 = class(TForm)
     TabControlButtons: TTabControl;
     ButtonSave: TButton;
     TabControlBody: TTabControl;
@@ -40,151 +40,157 @@ Type
     SpinEditScale: TSpinEdit;
     CheckBoxAutoColor: TCheckBox;
     CheckBoxIgnoreMouse: TCheckBox;
-    Procedure FormCreate(Sender: TObject);
-    Procedure ButtonSaveClick(Sender: TObject);
-    Procedure RadioButtonDefaultPositionClick(Sender: TObject);
-    Procedure RadioButtonLastPositionClick(Sender: TObject);
-    Procedure LoadNastr;
-    Procedure CheckAutoStart;
-    Procedure CreateAutoStart(Enabled: Boolean);
-    Procedure ApplyScaleImmediately;
-    Procedure MenuColorTrayIconClick(Sender: TObject);
-    Procedure MenuAutostartClick(Sender: TObject);
-    Procedure SpinEditNumberFontSizeKeyPress(Sender: TObject; Var Key: Char);
-    Procedure CheckNumberFontBoldClick(Sender: TObject);
-    Procedure SpinEditNumberChange(Sender: TObject);
-    Procedure ColorBoxNumberClick(Sender: TObject);
-    Procedure ComboBoxFontChange(Sender: TObject);
-    Procedure TrackBarScaleChange(Sender: TObject);
-    Procedure SpinEditNumberKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-    Procedure SpinEditNumberKeyPress(Sender: TObject; Var Key: Char);
-    Procedure FormMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
-    Procedure SpinEditScaleChange(Sender: TObject);
-    Procedure SpinEditScaleKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-    Procedure SpinEditScaleKeyPress(Sender: TObject; Var Key: Char);
-    Procedure CheckBoxAutoColorClick(Sender: TObject);
-    Function IsMouseIgnored: Boolean;
-    Procedure CheckBoxIgnoreMouseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure ButtonSaveClick(Sender: TObject);
+    procedure RadioButtonDefaultPositionClick(Sender: TObject);
+    procedure RadioButtonLastPositionClick(Sender: TObject);
+    procedure LoadNastr;
+    procedure CheckAutoStart;
+    procedure CreateAutoStart(Enabled: Boolean);
+    procedure ApplyScaleImmediately;
+    procedure MenuColorTrayIconClick(Sender: TObject);
+    procedure MenuAutostartClick(Sender: TObject);
+    procedure SpinEditNumberFontSizeKeyPress(Sender: TObject; var Key: Char);
+    procedure CheckNumberFontBoldClick(Sender: TObject);
+    procedure SpinEditNumberChange(Sender: TObject);
+    procedure ColorBoxNumberClick(Sender: TObject);
+    procedure ComboBoxFontChange(Sender: TObject);
+    procedure TrackBarScaleChange(Sender: TObject);
+    procedure SpinEditNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SpinEditNumberKeyPress(Sender: TObject; var Key: Char);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure SpinEditScaleChange(Sender: TObject);
+    procedure SpinEditScaleKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SpinEditScaleKeyPress(Sender: TObject; var Key: Char);
+    procedure CheckBoxAutoColorClick(Sender: TObject);
+    function IsMouseIgnored: Boolean;
+    procedure CheckBoxIgnoreMouseClick(Sender: TObject);
 
-  Private
+  private
     { Private declarations }
     FCurrentScale: Integer;
-  Public
+  public
     { Public declarations }
-  Protected
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  end;
 
-  End;
-
-Var
+var
   Form2: TForm2;
   i: Int64;
 
-Const
+const
   DEFAULT_SCALE = 100;
 
-Implementation
+implementation
 
 {$R *.dfm}
 
-Uses
+uses
   Unit_Base;
 
-Procedure TTrackBar.CreateParams(Var Params: TCreateParams);
-Begin
-  Inherited;
+procedure TForm2.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  Params.WndParent := GetDesktopWindow;
+end;
+
+procedure TTrackBar.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
   Params.Style := Params.Style;
-End;
+end;
 
-Function TTrackBar.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
-Begin
-  Position := Position + WheelDelta Div 120;
+function TTrackBar.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+begin
+  Position := Position + WheelDelta div 120;
   Result := True;
-End;
+end;
 
-Procedure TTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; x, y: Integer);
-Var
+procedure TTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState; x, y: Integer);
+var
   GlobalPos, LocalPos: TPoint;
-Begin
-  If self.Name = 'TrackBarScale' Then
-  Begin
-    If Button = mbLeft Then
-    Begin
+begin
+  if self.Name = 'TrackBarScale' then
+  begin
+    if Button = mbLeft then
+    begin
       GetCursorPos(GlobalPos);
       LocalPos := Form2.TrackBarScale.ScreenToClient(GlobalPos);
       Form2.TrackBarScale.Position := Round((Form2.TrackBarScale.Max / (Form2.TrackBarScale.Width - 28)) * (LocalPos.x - 14));
-    End;
-  End;
-End;
+    end;
+  end;
+end;
 
-
-Procedure TForm2.ButtonSaveClick(Sender: TObject);
-Begin
+procedure TForm2.ButtonSaveClick(Sender: TObject);
+begin
   Form1.SaveNastr;
   application.ProcessMessages;
   Form2.Close;
-End;
+end;
 
-Procedure TForm2.CheckAutoStart;
-Var
+procedure TForm2.CheckAutoStart;
+var
   Reg: TRegistry;
-  AutoStartPath: String;
-Begin
+  AutoStartPath: string;
+begin
   // Инициализируем состояние как неотмеченное
   Form2.MenuAutostart.Checked := False;
 
   Reg := TRegistry.Create;
-  Try
+  try
     Reg.RootKey := HKEY_CURRENT_USER;
 
     // Открываем ключ автозагрузки (только чтение)
-    If Reg.OpenKeyReadOnly('Software\Microsoft\Windows\CurrentVersion\Run') Then
-    Begin
-      Try
+    if Reg.OpenKeyReadOnly('Software\Microsoft\Windows\CurrentVersion\Run') then
+    begin
+      try
         // Проверяем существование записи для нашего приложения
-        If Reg.ValueExists(Application.Title) Then
-        Begin
+        if Reg.ValueExists(Application.Title) then
+        begin
           AutoStartPath := Reg.ReadString(Application.Title);
 
           // Нормализуем пути для корректного сравнения
-          If SameText(Trim(AutoStartPath), Trim(ParamStr(0))) Then
-          Begin
+          if SameText(Trim(AutoStartPath), Trim(ParamStr(0))) then
+          begin
             Form2.MenuAutostart.Checked := True;
-          End
+          end
           // Дополнительная проверка: может быть путь в кавычках
-          Else If SameText(Trim(AutoStartPath), '"' + Trim(ParamStr(0)) + '"') Then
-          Begin
+          else if SameText(Trim(AutoStartPath), '"' + Trim(ParamStr(0)) + '"') then
+          begin
             Form2.MenuAutostart.Checked := True;
-          End
+          end
           // Или путь с аргументами
-          Else If Pos(Trim(ParamStr(0)), AutoStartPath) > 0 Then
-          Begin
+          else if Pos(Trim(ParamStr(0)), AutoStartPath) > 0 then
+          begin
             // Проверяем, что путь - это начало строки
-            If SameText(Copy(AutoStartPath, 1, Length(ParamStr(0))), ParamStr(0)) Then
-            Begin
+            if SameText(Copy(AutoStartPath, 1, Length(ParamStr(0))), ParamStr(0)) then
+            begin
               Form2.MenuAutostart.Checked := True;
-            End;
-          End;
-        End;
-      Finally
+            end;
+          end;
+        end;
+      finally
         Reg.CloseKey;
-      End;
-    End;
-  Finally
+      end;
+    end;
+  finally
     Reg.Free;
-  End;
-End;
+  end;
+end;
 
-Procedure TForm2.CheckBoxAutoColorClick(Sender: TObject);
-Begin
-  ColorBoxNumber.Enabled := Not CheckBoxAutoColor.Checked;
+procedure TForm2.CheckBoxAutoColorClick(Sender: TObject);
+begin
+  ColorBoxNumber.Enabled := not CheckBoxAutoColor.Checked;
   ColorBoxNumberClick(self);
   Form1.Timer2.Enabled := CheckBoxAutoColor.Checked;
-End;
+end;
 
-Procedure TForm2.LoadNastr;
-Var
+procedure TForm2.LoadNastr;
+var
   Ini: TMemIniFile;
-Begin
+begin
   CheckAutoStart;
   Ini := TMemIniFile.Create(Form1.PortablePath);
   // Шрифт
@@ -197,16 +203,16 @@ Begin
   Form2.ComboBoxFontChange(self);
   // Положение окна
   Form2.RadioButtonDefaultPosition.Checked := Ini.ReadBool('Option', Form2.RadioButtonDefaultPosition.Name, false);
-  If Form2.RadioButtonDefaultPosition.Checked = TRUE Then
-  Begin
+  if Form2.RadioButtonDefaultPosition.Checked = TRUE then
+  begin
     Form2.RadioButtonDefaultPositionClick(self);
-  End;
+  end;
 
   Form2.RadioButtonLastPosition.Checked := Ini.ReadBool('Option', Form2.RadioButtonLastPosition.Name, false);
-  If Form2.RadioButtonLastPosition.Checked = TRUE Then
-  Begin
+  if Form2.RadioButtonLastPosition.Checked = TRUE then
+  begin
     Form2.RadioButtonLastPositionClick(self);
-  End;
+  end;
 
 
   //RestoreStringInfo;
@@ -215,35 +221,35 @@ Begin
 
   // Цветная иконка
   Form2.MenuColorTrayIcon.Checked := Ini.ReadBool('Option', Form2.MenuColorTrayIcon.Name, false);
-  Try
-    If Form2.MenuColorTrayIcon.Checked = TRUE Then
-    Begin
+  try
+    if Form2.MenuColorTrayIcon.Checked = TRUE then
+    begin
       Form1.TrayIcon1.IconIndex := 2;
       application.ProcessMessages;
-    End;
+    end;
 
-    If Form2.MenuColorTrayIcon.Checked = false Then
-    Begin
-      If DarkModeIsEnabled = TRUE Then
-      Begin
-        If SystemUsesLightTheme = false Then
+    if Form2.MenuColorTrayIcon.Checked = false then
+    begin
+      if DarkModeIsEnabled = TRUE then
+      begin
+        if SystemUsesLightTheme = false then
           Form1.TrayIcon1.IconIndex := 1;
-        If SystemUsesLightTheme = TRUE Then
+        if SystemUsesLightTheme = TRUE then
           Form1.TrayIcon1.IconIndex := 0;
         application.ProcessMessages;
-      End;
+      end;
 
-      If DarkModeIsEnabled = false Then
-      Begin
-        If SystemUsesLightTheme = TRUE Then
+      if DarkModeIsEnabled = false then
+      begin
+        if SystemUsesLightTheme = TRUE then
           Form1.TrayIcon1.IconIndex := 0;
-        If SystemUsesLightTheme = false Then
+        if SystemUsesLightTheme = false then
           Form1.TrayIcon1.IconIndex := 1;
         application.ProcessMessages;
-      End;
-    End;
-  Except
-  End;
+      end;
+    end;
+  except
+  end;
 
   // Блокировка положения окна
   Form2.CheckBoxIgnoreMouse.Checked := Ini.ReadBool('Option', CheckBoxIgnoreMouse.Name, false);
@@ -258,160 +264,160 @@ Begin
   Form2.CheckBoxAutoColor.Checked := Ini.ReadBool('Option', Form2.CheckBoxAutoColor.Name, false);
   Form2.CheckBoxAutoColorClick(self);
 
-  If Form2.CheckBoxAutoColor.Checked = false Then
-  Begin
+  if Form2.CheckBoxAutoColor.Checked = false then
+  begin
     Form2.ColorBoxNumber.Selected := Ini.ReadInteger('Option', Form2.ColorBoxNumber.Name, clWhite);
     Form2.ColorBoxNumberClick(Self);
-  End;
+  end;
 
   Ini.Free;
-End;
+end;
 
-Procedure TForm2.CheckBoxIgnoreMouseClick(Sender: TObject);
-Begin
+procedure TForm2.CheckBoxIgnoreMouseClick(Sender: TObject);
+begin
   Form1.UpdateCursorForAllLabels;
-End;
+end;
 
-Function TForm2.IsMouseIgnored: Boolean;
-Begin
+function TForm2.IsMouseIgnored: Boolean;
+begin
   Result := CheckBoxIgnoreMouse.Checked;
-End;
+end;
 
-Procedure TForm2.FormCreate(Sender: TObject);
-Begin
+procedure TForm2.FormCreate(Sender: TObject);
+begin
   Form1.Globload;
   SpinEditScale.MaxValue := TrackBarScale.Max;
   SpinEditScale.MinValue := TrackBarScale.Min;
   OnMouseWheel := FormMouseWheel;
   //SpinEditNumber по цунтру
-  SetWindowLong(SpinEditNumber.Handle, GWL_STYLE, GetWindowLong(SpinEditNumber.Handle, GWL_STYLE) Or ES_CENTER);
+  SetWindowLong(SpinEditNumber.Handle, GWL_STYLE, GetWindowLong(SpinEditNumber.Handle, GWL_STYLE) or ES_CENTER);
   SpinEditNumber.Repaint;
-End;
+end;
 
-Procedure TForm2.FormMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
-Var
+procedure TForm2.FormMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+var
   ComponentAtPosition: TControl;
-Begin
+begin
   // Получаем компонент, находящийся под курсором мыши
   ComponentAtPosition := FindDragTarget(Mouse.CursorPos, False);
 
   // Проверяем, является ли компонент типом TSpinEdit
-  If Assigned(ComponentAtPosition) And (ComponentAtPosition Is TSpinEdit) Then
-  Begin
-    With TComponent(ComponentAtPosition) As TSpinEdit Do
-    Begin
+  if Assigned(ComponentAtPosition) and (ComponentAtPosition is TSpinEdit) then
+  begin
+    with TComponent(ComponentAtPosition) as TSpinEdit do
+    begin
       SetFocus();
-      If WheelDelta > 0 Then
+      if WheelDelta > 0 then
         Value := Value + 1
-      Else
+      else
         Value := Value - 1;
 
       SelectAll(); // Выделение текста
 
       Handled := True;
       application.ProcessMessages;
-    End;
-  End;
+    end;
+  end;
 
-End;
+end;
 
-Procedure TForm2.ColorBoxNumberClick(Sender: TObject);
-Begin
-  If CheckBoxAutoColor.Checked = false Then
-  Begin
+procedure TForm2.ColorBoxNumberClick(Sender: TObject);
+begin
+  if CheckBoxAutoColor.Checked = false then
+  begin
     Form1.LabelNumber.Font.Color := Form2.ColorBoxNumber.Selected;
-  End;
-End;
+  end;
+end;
 
-Procedure TForm2.ComboBoxFontChange(Sender: TObject);
-Begin
+procedure TForm2.ComboBoxFontChange(Sender: TObject);
+begin
   Form1.FontApply;
   TrackBarScaleChange(Sender);
-End;
+end;
 
-Procedure tForm2.CreateAutoStart(Enabled: Boolean);
-Var
+procedure tForm2.CreateAutoStart(Enabled: Boolean);
+var
   Reg: TRegistry;
-Begin
-  If Enabled = true Then
-  Begin
+begin
+  if Enabled = true then
+  begin
     Reg := TRegistry.Create;
     Reg.RootKey := HKEY_CURRENT_USER;
     Reg.OpenKey('Software\Microsoft\Windows\CurrentVersion\Run', TRUE);
     Reg.WriteString(Application.Title, ParamStr(0));
     Reg.CloseKey;
     Reg.Free;
-  End;
+  end;
 
-  If Enabled = false Then
-  Begin
+  if Enabled = false then
+  begin
     Reg := TRegistry.Create;
     Reg.RootKey := HKEY_CURRENT_USER;
     Reg.OpenKey('Software\Microsoft\Windows\CurrentVersion\Run', TRUE);
     Reg.DeleteValue(Application.Title);
     Reg.CloseKey;
     Reg.Free;
-  End;
-End;
+  end;
+end;
 
-Procedure TForm2.MenuAutostartClick(Sender: TObject);
-Begin
-  If MenuAutostart.Checked Then
-  Begin
+procedure TForm2.MenuAutostartClick(Sender: TObject);
+begin
+  if MenuAutostart.Checked then
+  begin
     CreateAutoStart(True);
-  End
-  Else
-  Begin
+  end
+  else
+  begin
     CreateAutoStart(false);
-  End;
-End;
+  end;
+end;
 
-Procedure TForm2.MenuColorTrayIconClick(Sender: TObject);
-Begin
-  Try
-    If Form2.MenuColorTrayIcon.Checked = TRUE Then
-    Begin
+procedure TForm2.MenuColorTrayIconClick(Sender: TObject);
+begin
+  try
+    if Form2.MenuColorTrayIcon.Checked = TRUE then
+    begin
       Form1.TrayIcon1.IconIndex := 2;
       application.ProcessMessages;
-    End;
+    end;
 
-    If Form2.MenuColorTrayIcon.Checked = false Then
-    Begin
-      If DarkModeIsEnabled = TRUE Then
-      Begin
-        If SystemUsesLightTheme = false Then
+    if Form2.MenuColorTrayIcon.Checked = false then
+    begin
+      if DarkModeIsEnabled = TRUE then
+      begin
+        if SystemUsesLightTheme = false then
           Form1.TrayIcon1.IconIndex := 1;
-        If SystemUsesLightTheme = TRUE Then
+        if SystemUsesLightTheme = TRUE then
           Form1.TrayIcon1.IconIndex := 0;
         application.ProcessMessages;
-      End;
+      end;
 
-      If DarkModeIsEnabled = false Then
-      Begin
-        If SystemUsesLightTheme = TRUE Then
+      if DarkModeIsEnabled = false then
+      begin
+        if SystemUsesLightTheme = TRUE then
           Form1.TrayIcon1.IconIndex := 0;
-        If SystemUsesLightTheme = false Then
+        if SystemUsesLightTheme = false then
           Form1.TrayIcon1.IconIndex := 1;
         application.ProcessMessages;
-      End;
-    End;
-  Except
-  End;
-End;
+      end;
+    end;
+  except
+  end;
+end;
 
-Procedure TForm2.RadioButtonDefaultPositionClick(Sender: TObject);
-Begin
+procedure TForm2.RadioButtonDefaultPositionClick(Sender: TObject);
+begin
   RadioButtonDefaultPosition.Checked := TRUE;
   RadioButtonLastPosition.Checked := false;
   {Form1.Left := (Screen.WorkAreaWidth - Width - 20) Div 2;
   Form1.Top := (Screen.WorkAreaHeight - Height) Div 2;}
   application.ProcessMessages;
-End;
+end;
 
-Procedure TForm2.RadioButtonLastPositionClick(Sender: TObject);
-Var
+procedure TForm2.RadioButtonLastPositionClick(Sender: TObject);
+var
   Ini: TMemIniFile;
-Begin
+begin
   Ini := TMemIniFile.Create(Form1.PortablePath);
   RadioButtonLastPosition.Checked := TRUE;
   RadioButtonDefaultPosition.Checked := false;
@@ -419,81 +425,81 @@ Begin
   Form1.Left := Ini.ReadInteger('Option', 'Left', Form1.Left);
   Form1.KeepFormInWorkArea;
   Ini.Free;
-End;
+end;
 
-Procedure TForm2.TrackBarScaleChange(Sender: TObject);
-Begin
+procedure TForm2.TrackBarScaleChange(Sender: TObject);
+begin
   FCurrentScale := TrackBarScale.Position;
   Form2.SpinEditScale.Value := TrackBarScale.Position;
   TrackBarScale.ShowHint := true;
   TrackBarScale.Hint := inttostr(TrackBarScale.Position);
   ApplyScaleImmediately;
   Application.ProcessMessages;
-End;
+end;
 
-Procedure TForm2.ApplyScaleImmediately;
-Begin
-  If Assigned(Form1) Then
-  Begin
+procedure TForm2.ApplyScaleImmediately;
+begin
+  if Assigned(Form1) then
+  begin
     // Применяем масштаб к главному окну
     Form1.ApplyScale;
-  End;
-End;
+  end;
+end;
 
-Procedure TForm2.SpinEditNumberChange(Sender: TObject);
-Begin
+procedure TForm2.SpinEditNumberChange(Sender: TObject);
+begin
   Form1.LabelNumber.Caption := inttostr(SpinEditNumber.Value);
-End;
+end;
 
-Procedure TForm2.SpinEditNumberFontSizeKeyPress(Sender: TObject; Var Key: Char);
-Begin
+procedure TForm2.SpinEditNumberFontSizeKeyPress(Sender: TObject; var Key: Char);
+begin
   Key := #0;
-End;
+end;
 
-Procedure TForm2.SpinEditNumberKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-Begin
-  If Key In [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_BACK, VK_DELETE] Then
+procedure TForm2.SpinEditNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_BACK, VK_DELETE] then
     Exit
-  Else If Not (Key In [VK_TAB, VK_RETURN, VK_ESCAPE]) Then
+  else if not (Key in [VK_TAB, VK_RETURN, VK_ESCAPE]) then
     Key := 0;
-End;
+end;
 
-Procedure TForm2.SpinEditNumberKeyPress(Sender: TObject; Var Key: Char);
-Begin
+procedure TForm2.SpinEditNumberKeyPress(Sender: TObject; var Key: Char);
+begin
   Key := #0;
-End;
+end;
 
-Procedure TForm2.SpinEditScaleChange(Sender: TObject);
-Begin
+procedure TForm2.SpinEditScaleChange(Sender: TObject);
+begin
   TrackBarScale.Position := Form2.SpinEditScale.Value;
-End;
+end;
 
-Procedure TForm2.SpinEditScaleKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
-Begin
-  If Key In [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_BACK, VK_DELETE] Then
+procedure TForm2.SpinEditScaleKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_BACK, VK_DELETE] then
     Exit
-  Else If Not (Key In [VK_TAB, VK_RETURN, VK_ESCAPE]) Then
+  else if not (Key in [VK_TAB, VK_RETURN, VK_ESCAPE]) then
     Key := 0;
-End;
+end;
 
-Procedure TForm2.SpinEditScaleKeyPress(Sender: TObject; Var Key: Char);
-Begin
+procedure TForm2.SpinEditScaleKeyPress(Sender: TObject; var Key: Char);
+begin
   Key := #0;
-End;
+end;
 
-Procedure TForm2.CheckNumberFontBoldClick(Sender: TObject);
-Begin
+procedure TForm2.CheckNumberFontBoldClick(Sender: TObject);
+begin
 
-  If CheckNumberFontBold.Checked Then
-  Begin
+  if CheckNumberFontBold.Checked then
+  begin
     Form1.Canvas.Font.Style := Form1.Canvas.Font.Style + [fsBold];
-  End;
+  end;
 
-  If CheckNumberFontBold.Checked = false Then
-  Begin
+  if CheckNumberFontBold.Checked = false then
+  begin
     Form1.Canvas.Font.Style := Form1.Canvas.Font.Style - [fsBold];
-  End;
-End;
+  end;
+end;
 
-End.
+end.
 

@@ -104,9 +104,9 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=Nikolay Markov;FileDescription=Number Widget;FileVersion=1.9.26.204;InternalName=Number Widget;LegalCopyright=Copyright © 2010-2026 All Rights Reserved.;LegalTrademarks=Nikolay Markov;OriginalFilename=Number Widget;ProgramID=Number Widget;ProductName=Number Widget;ProductVersion=1.9.26.204;Comments=Number Widget</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Nikolay Markov;FileDescription=Number Widget;FileVersion=1.9.26.205;InternalName=Number Widget;LegalCopyright=Copyright © 2010-2026 All Rights Reserved.;LegalTrademarks=Nikolay Markov;OriginalFilename=Number Widget;ProgramID=Number Widget;ProductName=Number Widget;ProductVersion=1.9.26.205;Comments=Number Widget</VerInfo_Keys>
         <VerInfo_Release>26</VerInfo_Release>
-        <VerInfo_Build>204</VerInfo_Build>
+        <VerInfo_Build>205</VerInfo_Build>
         <DCC_ExeOutput>..\..\Application\Number Widget\</DCC_ExeOutput>
         <Icon_MainIcon>NumberWidgetColor.ico</Icon_MainIcon>
         <VerInfo_MinorVer>9</VerInfo_MinorVer>
